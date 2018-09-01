@@ -28,11 +28,11 @@ function recreateTree()
     $('#tree').tree('loadData', data);
 }
 
-function createNewGenesis(prompt = true)
+function createNewGenesis(toprompt = true)
 {
-    if (prompt)
+    if (toprompt)
     {
-        rootName = prompt("Enter Genesis Name", rootName);
+        rootName = prompt("Enter Genesis Name: ", rootName);
     }
 
     data = [
@@ -71,36 +71,51 @@ function createInternalProperty(name, value)
     return {name: "--" + name, children: [{name: value}]};
 }
 
-function createChildNodes()
+function createNewChild(parentObj, parent)
 {
-    var parent = prompt("Enter parent node");
+    var owner = prompt("Enter owner name: ", "vsp");
+    var value = prompt("Enter value of data: ", "100");
+    
+    var id = getNewID();
+    var timestamp = new Date();
+    var nodeNumber = id;
+    var nodeId = generateGuid();
+    var referenceNodeId = parent;
+    var genesisReferenceNodeId = rootName;
+
+    parentObj.children.push({name: id, children: [
+        createInternalProperty("owner", owner),
+        createInternalProperty("value", value),
+        createInternalProperty("timestamp", timestamp),
+        createInternalProperty("nodeNumber", nodeNumber),
+        createInternalProperty("nodeId", nodeId),
+        createInternalProperty("referenceNodeId", referenceNodeId),
+        createInternalProperty("genesisReferenceNodeId", genesisReferenceNodeId)
+    ]});
+}
+
+function createMultipleChilds()
+{
+    var parent = prompt("Enter parent node: ", rootName);
     var parentObj = findNode(data[0], parent);
 
-    var n = prompt("Enter number of nodes");
+    var n = prompt("Enter number of nodes: ", 5);
     n = parseInt(n);
 
     for (var i = 0; i < n; i++)
     {
-        var owner = prompt("Enter owner name: ");
-        var value = prompt("Enter value of data: ");
-        
-        var id = getNewID();
-        var timestamp = new Date();
-        var nodeNumber = id;
-        var nodeId = generateGuid();
-        var referenceNodeId = parent;
-        var genesisReferenceNodeId = rootName;
-
-        parentObj.children.push({name: id, children: [
-            createInternalProperty("owner", owner),
-            createInternalProperty("value", value),
-            createInternalProperty("timestamp", timestamp),
-            createInternalProperty("nodeNumber", nodeNumber),
-            createInternalProperty("nodeId", nodeId),
-            createInternalProperty("referenceNodeId", referenceNodeId),
-            createInternalProperty("genesisReferenceNodeId", genesisReferenceNodeId)
-        ]});
+        createNewChild(parentObj, parent);
     }
+
+    recreateTree();
+}
+
+function createSingleChild()
+{
+    var parent = prompt("Enter parent node: ", rootName);
+    var parentObj = findNode(data[0], parent);
+
+    createNewChild(parentObj, parent);
 
     recreateTree();
 }
@@ -120,8 +135,12 @@ function generateGuid() {
 </script>
 
 <br />
-<button onclick="createNewGenesis();">Create New Genesis Node</button>
+
+<button onclick="createNewGenesis();">1. Create New Genesis Node</button>
 <br />
 
-<button onclick="createChildNodes();">Create New Child Nodes</button>
+<button onclick="createMultipleChilds();">2. Create New Child Nodes</button>
+<br />
+
+<button onclick="createSingleChild();">3. Create Single Child Node</button>
 <br />
