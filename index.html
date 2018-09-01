@@ -66,6 +66,23 @@ function findNode(root, name)
     return -1;
 }
 
+function longestChain(root)
+{
+    var len = 1;
+
+    if ("children" in root)
+    {
+        for (var i = 0; i < root.children.length; i++)
+        {
+            var child = root.children[i];
+            var ret = longestChain(child);
+            len = Math.max(len, 1 + ret);
+        }
+    }
+
+    return len;
+}
+
 function createInternalProperty(name, value)
 {
     return {name: "--" + name, children: [{name: value}]};
@@ -144,6 +161,13 @@ function editOwner()
     recreateTree();
 }
 
+function findLongestGenesis()
+{
+    var obj = data[0];
+    var ans = Math.max(1, longestChain(obj) - 2);
+    alert("The longest chain in genesis is: " + ans);
+}
+
 function generateGuid() {
   var result, i, j;
   result = '';
@@ -173,4 +197,7 @@ function generateGuid() {
 <br />
 
 <button onclick="editOwner();">7. Change Owner of a Node</button>
+<br />
+
+<button onclick="findLongestGenesis();">8. Find Longest Chain of Genesis Node</button>
 <br />
