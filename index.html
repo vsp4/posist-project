@@ -1,0 +1,127 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="tree.jquery.js"></script>
+<link rel="stylesheet" href="jqtree.css">
+
+<div id="tree"></div>
+
+<script>
+var data = [];
+var rootName = "Genesis";
+
+$(function() {
+    $('#tree').tree({
+        data: data
+    });
+    createNewGenesis(false);
+});
+
+var globalID = 0;
+
+function getNewID()
+{
+    ++globalID;
+    return globalID;
+}
+
+function recreateTree()
+{
+    $('#tree').tree('loadData', data);
+}
+
+function createNewGenesis(prompt = true)
+{
+    if (prompt)
+    {
+        rootName = prompt("Enter Genesis Name", rootName);
+    }
+
+    data = [
+    {
+        name: rootName,
+        children: []
+    }];
+    recreateTree();
+}
+
+function findNode(root, name)
+{
+    if (root.name == name)
+    {
+        return root;
+    }
+
+    if ("children" in root)
+    {
+        for (var i = 0; i < root.children.length; i++)
+        {
+            var child = root.children[i];
+            var ret = findNode(child, name);
+            if (ret != "-1")
+            {
+                return ret;
+            }
+        }
+    }
+
+    return -1;
+}
+
+function createInternalProperty(name, value)
+{
+    return {name: "--" + name, children: [{name: value}]};
+}
+
+function createChildNodes()
+{
+    var parent = prompt("Enter parent node");
+    var parentObj = findNode(data[0], parent);
+
+    var n = prompt("Enter number of nodes");
+    n = parseInt(n);
+
+    for (var i = 0; i < n; i++)
+    {
+        var owner = prompt("Enter owner name: ");
+        var value = prompt("Enter value of data: ");
+        
+        var id = getNewID();
+        var timestamp = new Date();
+        var nodeNumber = id;
+        var nodeId = generateGuid();
+        var referenceNodeId = parent;
+        var genesisReferenceNodeId = rootName;
+
+        parentObj.children.push({name: id, children: [
+            createInternalProperty("owner", owner),
+            createInternalProperty("value", value),
+            createInternalProperty("timestamp", timestamp),
+            createInternalProperty("nodeNumber", nodeNumber),
+            createInternalProperty("nodeId", nodeId),
+            createInternalProperty("referenceNodeId", referenceNodeId),
+            createInternalProperty("genesisReferenceNodeId", genesisReferenceNodeId)
+        ]});
+    }
+
+    recreateTree();
+}
+
+function generateGuid() {
+  var result, i, j;
+  result = '';
+  for(j=0; j<32; j++) {
+    if( j == 8 || j == 12|| j == 16|| j == 20) 
+      result = result + '-';
+    i = Math.floor(Math.random()*16).toString(16).toUpperCase();
+    result = result + i;
+  }
+  return result;
+}
+
+</script>
+
+<br />
+<button onclick="createNewGenesis();">Create New Genesis Node</button>
+<br />
+
+<button onclick="createChildNodes();">Create New Child Nodes</button>
+<br />
