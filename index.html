@@ -1,215 +1,230 @@
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script src="tree.jquery.js"></script>
-<link rel="stylesheet" href="jqtree.css">
+<html>
+	<head>
+        <title>Posist Project</title>
+        
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="tree.jquery.js"></script>
+        <link rel="stylesheet" href="jqtree.css">
+    </head>
 
-<div id="tree"></div>
+    <body>
+        <div id="tree"></div>
+        
+        <br />
 
-<script>
-var data = [];
-var rootName = "Genesis";
+        <button onclick="createNewGenesis();">1. Create New Genesis Node</button>
+        <br />
 
-$(function() {
-    $('#tree').tree({
-        data: data
+        <button onclick="createMultipleChilds();">2. Create New Child Nodes</button>
+        <br />
+
+        <button onclick="createSingleChild();">3. Create Single Child Node</button>
+        <br />
+
+        <button onclick="editNodeValue();">6. Edit Value of a Node</button>
+        <br />
+
+        <button onclick="editOwner();">7. Change Owner of a Node</button>
+        <br />
+
+        <button onclick="findLongestGenesis();">8. Find Longest Chain of Genesis Node</button>
+        <br />
+
+        <button onclick="findLongestAny();">9. Find Longest Chain of Any Node</button>
+        <br />
+
+    </body>
+
+    <script>
+    var data = [];
+    var rootName = "Genesis";
+
+    $(function() {
+        $('#tree').tree({
+            data: data
+        });
+        createNewGenesis(false);
     });
-    createNewGenesis(false);
-});
 
-var globalID = 0;
+    var globalID = 0;
 
-function getNewID()
-{
-    ++globalID;
-    return globalID;
-}
-
-function recreateTree()
-{
-    $('#tree').tree('loadData', data);
-}
-
-function createNewGenesis(toprompt = true)
-{
-    if (toprompt)
+    function getNewID()
     {
-        rootName = prompt("Enter Genesis Name: ", rootName);
+        ++globalID;
+        return globalID;
     }
 
-    data = [
+    function recreateTree()
     {
-        name: rootName,
-        children: []
-    }];
-    recreateTree();
-}
-
-function findNode(root, name)
-{
-    if (root.name == name)
-    {
-        return root;
+        $('#tree').tree('loadData', data);
     }
 
-    if ("children" in root)
+    function createNewGenesis(toprompt = true)
     {
-        for (var i = 0; i < root.children.length; i++)
+        if (toprompt)
         {
-            var child = root.children[i];
-            var ret = findNode(child, name);
-            if (ret != "-1")
+            rootName = prompt("Enter Genesis Name: ", rootName);
+        }
+
+        data = [
+        {
+            name: rootName,
+            children: []
+        }];
+        recreateTree();
+    }
+
+    function findNode(root, name)
+    {
+        if (root.name == name)
+        {
+            return root;
+        }
+
+        if ("children" in root)
+        {
+            for (var i = 0; i < root.children.length; i++)
             {
-                return ret;
+                var child = root.children[i];
+                var ret = findNode(child, name);
+                if (ret != "-1")
+                {
+                    return ret;
+                }
             }
         }
+
+        return -1;
     }
 
-    return -1;
-}
-
-function longestChain(root)
-{
-    var len = 1;
-
-    if ("children" in root)
+    function longestChain(root)
     {
-        for (var i = 0; i < root.children.length; i++)
+        var len = 1;
+
+        if ("children" in root)
         {
-            var child = root.children[i];
-            var ret = longestChain(child);
-            len = Math.max(len, 1 + ret);
+            for (var i = 0; i < root.children.length; i++)
+            {
+                var child = root.children[i];
+                var ret = longestChain(child);
+                len = Math.max(len, 1 + ret);
+            }
         }
+
+        return len;
     }
 
-    return len;
-}
-
-function createInternalProperty(name, value)
-{
-    return {name: "--" + name, children: [{name: value}]};
-}
-
-function createNewChild(parentObj, parent)
-{
-    var owner = prompt("Enter owner name: ", "vsp");
-    var value = prompt("Enter value of data: ", "100");
-    
-    var id = getNewID();
-    var timestamp = new Date();
-    var nodeNumber = id;
-    var nodeId = generateGuid();
-    var referenceNodeId = parent;
-    var genesisReferenceNodeId = rootName;
-
-    parentObj.children.push({name: id, children: [
-        createInternalProperty("owner", owner),
-        createInternalProperty("value", value),
-        createInternalProperty("timestamp", timestamp),
-        createInternalProperty("nodeNumber", nodeNumber),
-        createInternalProperty("nodeId", nodeId),
-        createInternalProperty("referenceNodeId", referenceNodeId),
-        createInternalProperty("genesisReferenceNodeId", genesisReferenceNodeId)
-    ]});
-}
-
-function createMultipleChilds()
-{
-    var parent = prompt("Enter parent node: ", rootName);
-    var parentObj = findNode(data[0], parent);
-
-    var n = prompt("Enter number of nodes: ", 5);
-    n = parseInt(n);
-
-    for (var i = 0; i < n; i++)
+    function createInternalProperty(name, value)
     {
-        createNewChild(parentObj, parent);
+        return {name: "--" + name, children: [{name: value}]};
     }
 
-    recreateTree();
-}
+    function createNewChild(parentObj, parent)
+    {
+        var owner = prompt("Enter owner name: ", "vsp");
+        var value = prompt("Enter value of data: ", "100");
+        
+        var id = getNewID();
+        var timestamp = new Date();
+        var nodeNumber = id;
+        var nodeId = generateGuid();
+        var referenceNodeId = parent;
+        var genesisReferenceNodeId = rootName;
 
-function createSingleChild()
-{
-    var parent = prompt("Enter parent node: ", rootName);
-    var parentObj = findNode(data[0], parent);
+        parentObj.children.push({name: id, children: [
+            createInternalProperty("owner", owner),
+            createInternalProperty("value", value),
+            createInternalProperty("timestamp", timestamp),
+            createInternalProperty("nodeNumber", nodeNumber),
+            createInternalProperty("nodeId", nodeId),
+            createInternalProperty("referenceNodeId", referenceNodeId),
+            createInternalProperty("genesisReferenceNodeId", genesisReferenceNodeId)
+        ]});
+    }
 
-    createNewChild(parentObj, parent);
+    function createMultipleChilds()
+    {
+        var parent = prompt("Enter parent node: ", rootName);
+        var parentObj = findNode(data[0], parent);
 
-    recreateTree();
-}
+        var n = prompt("Enter number of nodes: ", 5);
+        n = parseInt(n);
 
-function editNodeValue()
-{
-    var node = prompt("Enter node identifier to edit: ", rootName);
-    var nodeObj = findNode(data[0], node);
+        for (var i = 0; i < n; i++)
+        {
+            createNewChild(parentObj, parent);
+        }
 
-    var value = prompt("Enter new node value: ", 200);
-    var dataobj = findNode(nodeObj, "--value");
-    dataobj.children[0].name = value;
+        recreateTree();
+    }
 
-    recreateTree();
-}
+    function createSingleChild()
+    {
+        var parent = prompt("Enter parent node: ", rootName);
+        var parentObj = findNode(data[0], parent);
 
-function editOwner()
-{
-    var node = prompt("Enter node identifier to edit: ", rootName);
-    var nodeObj = findNode(data[0], node);
+        createNewChild(parentObj, parent);
 
-    var value = prompt("Enter new owner: ", "abc");
-    var dataobj = findNode(nodeObj, "--owner");
-    dataobj.children[0].name = value;
+        recreateTree();
+    }
 
-    recreateTree();
-}
+    function editNodeValue()
+    {
+        var node = prompt("Enter node identifier to edit: ", rootName);
+        var nodeObj = findNode(data[0], node);
 
-function findLongestGenesis()
-{
-    var obj = data[0];
-    var ans = Math.max(1, longestChain(obj) - 2);
-    alert("The longest chain in genesis is: " + ans);
-}
+        var value = prompt("Enter new node value: ", 200);
+        var dataobj = findNode(nodeObj, "--value");
+        dataobj.children[0].name = value;
 
-function findLongestAny()
-{
-    var parent = prompt("Enter node identifier to find longest chain from: ", rootName);
-    var parentObj = findNode(data[0], parent);
+        recreateTree();
+    }
 
-    var ans = Math.max(1, longestChain(parentObj) - 2);
-    alert("The longest chain from subtree at node " + parent + " is: " + ans);
-}
+    function editOwner()
+    {
+        var node = prompt("Enter node identifier to edit: ", rootName);
+        var nodeObj = findNode(data[0], node);
 
-function generateGuid() {
-  var result, i, j;
-  result = '';
-  for(j=0; j<32; j++) {
-    if( j == 8 || j == 12|| j == 16|| j == 20) 
-      result = result + '-';
-    i = Math.floor(Math.random()*16).toString(16).toUpperCase();
-    result = result + i;
-  }
-  return result;
-}
+        var value = prompt("Enter new owner: ", "abc");
+        var dataobj = findNode(nodeObj, "--owner");
+        dataobj.children[0].name = value;
 
-</script>
+        recreateTree();
+    }
 
-<br />
+    function findLongestGenesis()
+    {
+        var obj = data[0];
+        var ans = Math.max(1, longestChain(obj) - 2);
+        alert("The longest chain in genesis is: " + ans);
+    }
 
-<button onclick="createNewGenesis();">1. Create New Genesis Node</button>
-<br />
+    function getChainLength(parent)
+    {
+        var parentObj = findNode(data[0], parent);
+        var ans = Math.max(1, longestChain(parentObj) - 2);
+        return ans;
+    }
 
-<button onclick="createMultipleChilds();">2. Create New Child Nodes</button>
-<br />
+    function findLongestAny()
+    {
+        var parent = prompt("Enter node identifier to find longest chain from: ", rootName);
+        var ans = getChainLength(parent);
+        alert("The longest chain from subtree at node " + parent + " is: " + ans);
+    }
 
-<button onclick="createSingleChild();">3. Create Single Child Node</button>
-<br />
+    function generateGuid() {
+    var result, i, j;
+    result = '';
+    for(j=0; j<32; j++) {
+        if( j == 8 || j == 12|| j == 16|| j == 20) 
+        result = result + '-';
+        i = Math.floor(Math.random()*16).toString(16).toUpperCase();
+        result = result + i;
+    }
+    return result;
+    }
 
-<button onclick="editNodeValue();">6. Edit Value of a Node</button>
-<br />
+    </script>
 
-<button onclick="editOwner();">7. Change Owner of a Node</button>
-<br />
-
-<button onclick="findLongestGenesis();">8. Find Longest Chain of Genesis Node</button>
-<br />
-
-<button onclick="findLongestAny();">9. Find Longest Chain of Any Node</button>
-<br />
+</html>
