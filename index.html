@@ -5,33 +5,42 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <script src="tree.jquery.js"></script>
         <link rel="stylesheet" href="jqtree.css">
+        
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     </head>
 
     <body>
-        <div id="tree"></div>
         
-        <br />
+        <div class="container">
+            <h2>TreeView</h2>
 
-        <button onclick="createNewGenesis();">1. Create New Genesis Node</button>
-        <br />
+            <div id="tree"></div>
+            
+            <br />
 
-        <button onclick="createMultipleChilds();">2. Create New Child Nodes</button>
-        <br />
+            <button class="btn btn-info" onclick="createNewGenesis();">1. Create New Genesis Node</button>
+            <br /><br />
 
-        <button onclick="createSingleChild();">3. Create Single Child Node</button>
-        <br />
+            <button class="btn btn-info" onclick="createMultipleChilds();">2. Create New Child Nodes</button>
+            <br /><br />
 
-        <button onclick="editNodeValue();">6. Edit Value of a Node</button>
-        <br />
+            <button class="btn btn-info" onclick="createSingleChild();">3. Create Single Child Node</button>
+            <br /><br />
 
-        <button onclick="editOwner();">7. Change Owner of a Node</button>
-        <br />
+            <button class="btn btn-info" onclick="editNodeValue();">6. Edit Value of a Node</button>
+            <br /><br />
 
-        <button onclick="findLongestGenesis();">8. Find Longest Chain of Genesis Node</button>
-        <br />
+            <button class="btn btn-info" onclick="editOwner();">7. Change Owner of a Node</button>
+            <br /><br />
 
-        <button onclick="findLongestAny();">9. Find Longest Chain of Any Node</button>
-        <br />
+            <button class="btn btn-info" onclick="findLongestGenesis();">8. Find Longest Chain of Genesis Node</button>
+            <br /><br />
+
+            <button class="btn btn-info" onclick="findLongestAny();">9. Find Longest Chain of Any Node</button>
+            <br /><br />
+
+        </div>
 
     </body>
 
