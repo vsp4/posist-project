@@ -168,6 +168,15 @@ function findLongestGenesis()
     alert("The longest chain in genesis is: " + ans);
 }
 
+function findLongestAny()
+{
+    var parent = prompt("Enter node identifier to find longest chain from: ", rootName);
+    var parentObj = findNode(data[0], parent);
+
+    var ans = Math.max(1, longestChain(parentObj) - 2);
+    alert("The longest chain from subtree at node " + parent + " is: " + ans);
+}
+
 function generateGuid() {
   var result, i, j;
   result = '';
@@ -200,4 +209,7 @@ function generateGuid() {
 <br />
 
 <button onclick="findLongestGenesis();">8. Find Longest Chain of Genesis Node</button>
+<br />
+
+<button onclick="findLongestAny();">9. Find Longest Chain of Any Node</button>
 <br />
