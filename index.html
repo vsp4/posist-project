@@ -132,6 +132,18 @@ function editNodeValue()
     recreateTree();
 }
 
+function editOwner()
+{
+    var node = prompt("Enter node identifier to edit: ", rootName);
+    var nodeObj = findNode(data[0], node);
+
+    var value = prompt("Enter new owner: ", "abc");
+    var dataobj = findNode(nodeObj, "--owner");
+    dataobj.children[0].name = value;
+
+    recreateTree();
+}
+
 function generateGuid() {
   var result, i, j;
   result = '';
@@ -158,4 +170,7 @@ function generateGuid() {
 <br />
 
 <button onclick="editNodeValue();">6. Edit Value of a Node</button>
+<br />
+
+<button onclick="editOwner();">7. Change Owner of a Node</button>
 <br />
